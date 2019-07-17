@@ -41,8 +41,7 @@ namespace WrapStuff.Wraps
 			CircleShape.Draw(Offset, 4, true);
 			
 			LineShape.Draw(Offset, Offset - Vector2.UnitY * 8);
-
-
+			
 			if (Attachments == null)
 			{
 				return;
