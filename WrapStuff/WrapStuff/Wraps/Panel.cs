@@ -2,20 +2,14 @@
 using Monofoxe.Engine;
 using Monofoxe.Engine.Drawing;
 using System;
-
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace WrapStuff.Wraps
 {
 	
 	public class Panel
 	{
-		static readonly Vector2[] _sideRotations = {
-			Vector2.UnitY,
-			Vector2.UnitX,
-			-Vector2.UnitY,
-			-Vector2.UnitX,
-		};
-		
 		/// <summary>
 		/// Tells, on which side relative to the parent the panel will be.
 		/// 0 - bottom
@@ -74,5 +68,37 @@ namespace WrapStuff.Wraps
 
 			GraphicsMgr.ResetTransformMatrix();
 		}
+
+		public void Get3DVertices(List<VertexPositionColorTexture> vertices, Matrix transformMatrix)
+		{
+			var center = Offset - Vector2.UnitY * Size / 2f;
+
+			// 0 1
+			// 3 2
+
+			var v = new VertexPositionColorTexture[4];
+			v[0].Position = (center - Size / 2f).ToVector3();
+			v[0].TextureCoordinate = new Vector2(0, 0);
+			v[1].Position = (center - new Vector2(-Size.X, Size.Y) / 2f).ToVector3();
+			v[1].TextureCoordinate = new Vector2(0, 1);
+			v[2].Position = (center + Size / 2f).ToVector3();
+			v[2].TextureCoordinate = new Vector2(1, 1);
+			v[3].Position = (center + new Vector2(-Size.X, Size.Y) / 2f).ToVector3();
+			v[3].TextureCoordinate = new Vector2(1, 0);
+
+			for (var i = 0; i < 4; i += 1)
+			{
+				// Applying local transform matrix manually.
+				// The engine is not built for 3D, lots of 
+				// Has to be done by hand.
+				v[i].Position = Vector3.Transform(v[i].Position, transformMatrix);
+			}
+
+			vertices.AddRange(v);
+		}
+
+
+
+
 	}
 }

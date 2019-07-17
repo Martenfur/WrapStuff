@@ -4,6 +4,7 @@ using Monofoxe.Engine.Drawing;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace WrapStuff.Wraps
 {
@@ -13,6 +14,10 @@ namespace WrapStuff.Wraps
 		public Panel Root;
 		public Vector2 Position;
 		public float Rotation;
+
+
+		public readonly short[] _indices = new short[] { 0, 1, 3, 1, 2, 3 };
+
 
 		public void Draw()
 		{
@@ -24,6 +29,20 @@ namespace WrapStuff.Wraps
 			);
 			Root.Draw();
 			GraphicsMgr.ResetTransformMatrix();
+		}
+
+		public List<VertexPositionColorTexture> Draw3D()
+		{
+			var matrix = Matrix.CreateTranslation((Vector2.UnitY * Root.Size.Y / 2f).ToVector3())
+				* Matrix.CreateRotationZ(MathHelper.ToRadians(Rotation))
+				* Matrix.CreateTranslation(Position.ToVector3());
+
+			var vertices = new List<VertexPositionColorTexture>();
+
+			Root.Get3DVertices(vertices, matrix);
+
+			return vertices;
+			
 		}
 		
 
