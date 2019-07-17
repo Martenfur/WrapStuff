@@ -32,35 +32,43 @@ namespace WrapStuff
 			GraphicsMgr.Sampler = SamplerState.PointClamp;
 
 
-			
+			var a = new Panel
+			{
+				Position = new Vector2(0, 0),
+				Size = new Vector2(16, 64),
+				Side = 2,
+			};
 			var a1 = new Panel
 			{
 				Position = new Vector2(0, 0),
-				Size = new Vector2(8, 32),
-				Side = 0
+				Size = new Vector2(16, 64),
+				Side = 0,
+				Attachments = new Panel[] {a}
 			};
 			var a2 = new Panel
 			{
 				Position = new Vector2(0, 0),
-				Size = new Vector2(8, 32),
+				Size = new Vector2(16, 16),
 				Side = 1
 			};
 			var a3 = new Panel
 			{
 				Position = new Vector2(0, 0),
-				Size = new Vector2(8, 32),
-				Side = 2
+				Size = new Vector2(16, 32),
+				Side = 2,
+				Attachments = new Panel[] { a }
 			};
 			var a4 = new Panel
 			{
 				Position = new Vector2(0, 0),
-				Size = new Vector2(8, 32),
-				Side = 3
+				Size = new Vector2(16, 48),
+				Side = 3,
+				Attachments = new Panel[] { a, a2 }
 			};
 			panel = new Panel
 			{
-				Position = new Vector2(300, 300),
-				Size = new Vector2(64, 64),
+				Position = new Vector2(400, 400),
+				Size = new Vector2(100, 200),
 				Attachments = new Panel[]{a1, a2, a3, a4}
 			};
 
@@ -76,7 +84,7 @@ namespace WrapStuff
 		{
 			//Default.Monofoxe.Draw(new Vector2(400, 300), Default.Monofoxe.Origin);
 			GraphicsMgr.CurrentColor = Color.White * 0.5f;
-			panel.Draw();
+			panel.Draw(true);
 		}
 
 	}
