@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Wraps\Panel.cs" />
+    <Compile Include="Wraps\Wrap.cs" />
     <None Include="Content\Content.npl" />
     <None Include="Content\Graphics\Template.cstemplate" />
     <Compile Include="Game1.cs" />

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
 using Monofoxe.Engine;
 using Monofoxe.Engine.Drawing;
-using Monofoxe.Engine.ECS;
-using Monofoxe.Engine.SceneSystem;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System;
 
 
 namespace WrapStuff.Wraps
 {
+	
 	public class Panel
 	{
 		static readonly Vector2[] _sideRotations = {
@@ -29,21 +26,21 @@ namespace WrapStuff.Wraps
 		public int Side;
 
 		public string Name;
-		public Vector2 Position;
+		public Vector2 Offset;
 		public Vector2 Size;
 
 		public Panel[] Attachments;
 		
 
-		public void Draw(bool root)
+		public void Draw()
 		{
 			// Transform matrices took care of the rotations,
 			// so all panels assume they are drawn with no rotation\offset.
-			RectangleShape.DrawBySize(Position - Vector2.UnitY * Size / 2f, Size, true);
+			RectangleShape.DrawBySize(Offset - Vector2.UnitY * Size / 2f, Size, true);
 			
-			CircleShape.Draw(Position, 4, true);
+			CircleShape.Draw(Offset, 4, true);
 			
-			LineShape.Draw(Position, Position - Vector2.UnitY * 8);
+			LineShape.Draw(Offset, Offset - Vector2.UnitY * 8);
 
 
 			if (Attachments == null)
@@ -51,6 +48,7 @@ namespace WrapStuff.Wraps
 				return;
 			}
 
+			// Transform matrices stack.
 			GraphicsMgr.AddTransformMatrix(
 				Matrix.CreateTranslation(-(Vector2.UnitY * Size / 2f).ToVector3())
 			);
@@ -69,9 +67,9 @@ namespace WrapStuff.Wraps
 					//Matrix.CreateRotationZ(0.3f) // Future reference - use this to pivot the panels.
 					Matrix.CreateTranslation(-(Vector2.UnitY * length).ToVector3())
 					* Matrix.CreateRotationZ((float)(Math.PI - Math.PI / 2f * resultSide))
-					* Matrix.CreateTranslation(Position.ToVector3())
+					* Matrix.CreateTranslation(Offset.ToVector3())
 				);
-				panel.Draw(false);
+				panel.Draw();
 				GraphicsMgr.ResetTransformMatrix();
 			}
 
