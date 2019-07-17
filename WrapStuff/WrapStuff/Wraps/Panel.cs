@@ -76,17 +76,23 @@ namespace WrapStuff.Wraps
 			// 0 1
 			// 3 2
 
-			var v = new VertexPositionColorTexture[4];
+			var v = new VertexPositionColorTexture[6];
 			v[0].Position = (center - Size / 2f).ToVector3();
 			v[0].TextureCoordinate = new Vector2(0, 0);
 			v[1].Position = (center - new Vector2(-Size.X, Size.Y) / 2f).ToVector3();
 			v[1].TextureCoordinate = new Vector2(0, 1);
-			v[2].Position = (center + Size / 2f).ToVector3();
-			v[2].TextureCoordinate = new Vector2(1, 1);
-			v[3].Position = (center + new Vector2(-Size.X, Size.Y) / 2f).ToVector3();
-			v[3].TextureCoordinate = new Vector2(1, 0);
+			v[2].Position = (center + new Vector2(-Size.X, Size.Y) / 2f).ToVector3();
+			v[2].TextureCoordinate = new Vector2(1, 0);
 
-			for (var i = 0; i < 4; i += 1)
+			v[3].Position = (center - new Vector2(-Size.X, Size.Y) / 2f).ToVector3();
+			v[3].TextureCoordinate = new Vector2(0, 1);
+			v[4].Position = (center + new Vector2(-Size.X, Size.Y) / 2f).ToVector3();
+			v[4].TextureCoordinate = new Vector2(1, 0);
+			v[5].Position = (center + Size / 2f).ToVector3();
+			v[5].TextureCoordinate = new Vector2(1, 1);
+
+
+			for (var i = 0; i < 6; i += 1)
 			{
 				// Applying local transform matrix manually.
 				// The engine is not built for 3D, lots of 
@@ -95,6 +101,35 @@ namespace WrapStuff.Wraps
 			}
 
 			vertices.AddRange(v);
+
+
+			if (Attachments == null)
+			{
+				return;
+			}
+
+			transformMatrix = Matrix.CreateTranslation(-(Vector2.UnitY * Size / 2f).ToVector3()) * transformMatrix;
+
+			foreach (var panel in Attachments)
+			{
+				// We need to offset the child panel by half of parent's 
+				// width or height depending on the side.
+				var length = Size.X / 2f;
+				var resultSide = panel.Side;
+				if (panel.Side % 2 == 0)
+				{
+					length = Size.Y / 2f;
+				}
+
+				var localMatrix = transformMatrix * 
+					Matrix.CreateTranslation((Vector2.UnitY * length * 2).ToVector3())
+					* Matrix.CreateRotationZ((float)(Math.PI - Math.PI / 2f * resultSide))
+					* Matrix.CreateTranslation(Offset.ToVector3());
+
+				panel.Get3DVertices(vertices, localMatrix);
+			}
+
+
 		}
 
 

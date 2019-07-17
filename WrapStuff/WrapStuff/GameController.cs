@@ -13,12 +13,22 @@ namespace WrapStuff
 {
 	public class GameController : Entity
 	{
-		Camera cam = new Camera(1000, 800);
-
+		Camera cam;
 		Wrap wrap;
 
 		public GameController() : base(SceneMgr.GetScene("default")["default"])
 		{
+			GraphicsMgr.Device.PresentationParameters.DepthStencilFormat = DepthFormat.Depth24Stencil8;
+			var depthState = new DepthStencilState();
+			depthState.DepthBufferEnable = true;
+			depthState.DepthBufferWriteEnable = true;
+
+
+			GraphicsMgr.Device.DepthStencilState = DepthStencilState.Default;
+
+
+			cam = new Camera(1000, 800);
+
 			GameMgr.MaxGameSpeed = 60;
 			GameMgr.MinGameSpeed = 60; // Fixing framerate on 60.
 
@@ -34,13 +44,36 @@ namespace WrapStuff
 
 			GraphicsMgr.Sampler = SamplerState.PointClamp;
 			GraphicsMgr.Rasterizer = RasterizerState.CullNone;
-
+			
 			wrap = new Wrap();
-			wrap.ReadFromXML(Environment.CurrentDirectory + "/Content/Wraps/BeerPack.xml");
+			//wrap.ReadFromXML(Environment.CurrentDirectory + "/Content/Wraps/BeerPack.xml");
 			wrap.Position = Vector2.Zero;
+
+			var p1 = new Panel
+			{
+				Size = new Vector2(100, 500),
+				Side = 2,
+			};
+			var p = new Panel
+			{
+				Size = new Vector2(500, 100),
+				Side = 1,
+				Attachments = new Panel[]{p1}
+			};
+			
+
+
+			wrap.Root = new Panel
+			{
+				Size = new Vector2(1000, 1000),
+				Attachments = new Panel[]{p, p1},
+			};
 
 			cam.Position = wrap.Position + Vector2.UnitX * 500;
 			Init3D();
+
+
+
 		}
 
 		public override void Update()
@@ -54,18 +87,20 @@ namespace WrapStuff
 		public override void Draw()
 		{
 			GraphicsMgr.CurrentColor = Color.White * 0.5f;
-			//wrap.Draw();
+			wrap.Draw();
+			GraphicsMgr.SwitchGraphicsMode(GraphicsMode.None);
 
 			Draw3D(1);
 		}
 
-		BasicEffect effect;
+		AlphaTestEffect effect;
 
 		void Init3D()
 		{
 			
-			effect = new BasicEffect(GameMgr.Game.GraphicsDevice);
-			
+			effect = new AlphaTestEffect(GameMgr.Game.GraphicsDevice);
+			//effect.AlphaFunction = CompareFunction.Equal;
+
 		}
 
 		Vector2 camPos;
@@ -76,7 +111,7 @@ namespace WrapStuff
 			
 			var t = GameMgr.ElapsedTimeTotal;
 			var center = wrap.Position;
-			var cameraPosition = new Vector3(camPos.X + center.Y, camPos.Y + center.Y, 800 * (float)Math.Sin(t));
+			var cameraPosition = new Vector3(camPos.X + center.Y, camPos.Y + center.Y, 800);
 			
 			effect.World = Matrix.CreateTranslation(Vector3.Zero);
 			effect.View =
@@ -88,21 +123,11 @@ namespace WrapStuff
 			
 			effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 1, 40000);
 			
-			effect.TextureEnabled = true;
+			//effect.TextureEnabled = true;
 			effect.Texture = Resources.Sprites.Default.Monofoxe[0].Texture;
-			
-			foreach(var pass in effect.CurrentTechnique.Passes)
-			{
-				pass.Apply();
 
-				graphics.DrawUserIndexedPrimitives(
-					PrimitiveType.TriangleList,
-					wrap.Draw3D().ToArray(),
-					0,
-					4,
-					wrap._indices, 0, 2
-				);
-			}
+			wrap.Draw3D(effect);
+
 		}
 
 	}

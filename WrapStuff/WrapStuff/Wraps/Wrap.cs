@@ -16,7 +16,7 @@ namespace WrapStuff.Wraps
 		public float Rotation;
 
 
-		public readonly short[] _indices = new short[] { 0, 1, 3, 1, 2, 3 };
+		public readonly short[] _indices = new short[] { 0, 1, 3, 1, 3, 2 };
 
 
 		public void Draw()
@@ -31,7 +31,7 @@ namespace WrapStuff.Wraps
 			GraphicsMgr.ResetTransformMatrix();
 		}
 
-		public List<VertexPositionColorTexture> Draw3D()
+		public void Draw3D(AlphaTestEffect effect)
 		{
 			var matrix = Matrix.CreateTranslation((Vector2.UnitY * Root.Size.Y / 2f).ToVector3())
 				* Matrix.CreateRotationZ(MathHelper.ToRadians(Rotation))
@@ -41,8 +41,37 @@ namespace WrapStuff.Wraps
 
 			Root.Get3DVertices(vertices, matrix);
 
-			return vertices;
-			
+			var graphics = GameMgr.Game.GraphicsDevice;
+
+			var indices = new short[vertices.Count / 2 * 6];
+			for(var i = 0; i < indices.Length; i += 1)
+			{
+				var primitiveId = (i / 6);
+				indices[i] = (short)(_indices[i - primitiveId * 6] + 6 * primitiveId);
+			}
+
+			foreach (var pass in effect.CurrentTechnique.Passes)
+			{
+				pass.Apply();
+
+				/*graphics.DrawUserIndexedPrimitives(
+					PrimitiveType.TriangleList,
+					vertices.ToArray(),
+					0,
+					vertices.Count,
+					indices, 
+					0, 
+					vertices.Count / 2
+				);*/
+
+				graphics.DrawUserPrimitives(
+					PrimitiveType.TriangleList,
+					vertices.ToArray(),
+					0,
+					vertices.Count / 3
+				);
+			}
+
 		}
 		
 
