@@ -1,0 +1,49 @@
+{
+	"content": 
+	{
+		"contentList": 
+		{
+			"path": "Content.mgcb",
+			"recursive": "False",
+			"action": "build",
+			"importer": "AssetInfoImporter",
+			"processor": "PassThroughProcessor",
+		},
+		"xml": 
+		{
+			"path": "Wraps/*.xml",
+			"recursive": "True",
+			"action": "copy",
+		},
+		"defaultSpriteGroup": 
+		{
+			"path": "Graphics/Default.spritegroup",
+			"recursive": "True",
+			"action": "build",
+			"importer": "SpriteGroupImporter",
+			"processor": "SpriteGroupProcessor",
+			"watch": 
+			[
+				"Default/*.png",
+				"Default/*.json",
+			],
+		},
+		"effects": 
+		{
+			"path": "Effects/*.fx",
+			"recursive": "True",
+			"action": "build",
+			"importer": "EffectImporter",
+			"processor": "EffectProcessor",
+		},
+		"fonts": 
+		{
+			"path": "Fonts/*.spritefont",
+			"recursive": "True",
+			"action": "build",
+			"importer": "FontDescriptionImporter",
+			"processor": "FontDescriptionProcessor",
+		},
+
+	}
+}
