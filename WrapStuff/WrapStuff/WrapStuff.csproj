@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CameraController.cs" />
     <Compile Include="Wraps\Panel.cs" />
     <Compile Include="Wraps\Wrap.cs" />
     <None Include="Content\Content.npl" />

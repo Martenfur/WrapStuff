@@ -16,6 +16,7 @@ namespace WrapStuff
 		Camera cam = new Camera(1000, 800);
 
 		Wrap wrap;
+		Layer GUILayer;
 
 		public GameController() : base(SceneMgr.GetScene("default")["default"])
 		{
@@ -24,8 +25,7 @@ namespace WrapStuff
 
 			cam.BackgroundColor = new Color(38, 38, 38);
 			cam.Zoom = 0.25f;
-			cam.Offset = cam.Size / 2;
-
+			
 			GameMgr.WindowManager.CanvasSize = cam.Size;
 			GameMgr.WindowManager.Window.AllowUserResizing = false;
 			GameMgr.WindowManager.ApplyChanges();
@@ -39,71 +39,27 @@ namespace WrapStuff
 			wrap.ReadFromXML(Environment.CurrentDirectory + "/Content/Wraps/BeerPack.xml");
 			wrap.Position = Vector2.Zero;
 
+			// GUI layer will not follow the camera.
+			GUILayer = Scene.CreateLayer("gui");
+			GUILayer.IsGUI = true;
+			new CameraController(GUILayer, cam);
+
 			cam.Position = wrap.Position + Vector2.UnitX * 500;
-			Init3D();
+			
 		}
 
 		public override void Update()
 		{
-			camPos.X += (Input.CheckButton(Buttons.Right).ToInt()  - Input.CheckButton(Buttons.Left).ToInt()) * 8;
-			camPos.Y += (Input.CheckButton(Buttons.Down).ToInt() - Input.CheckButton(Buttons.Up).ToInt()) * 8;
-
+			
 		}
 
 
 		public override void Draw()
 		{
 			GraphicsMgr.CurrentColor = Color.White * 0.5f;
-			//wrap.Draw();
-
-			Draw3D(1);
+			wrap.Draw();
 		}
-
-		BasicEffect effect;
-
-		void Init3D()
-		{
-			
-			effect = new BasicEffect(GameMgr.Game.GraphicsDevice);
-			
-		}
-
-		Vector2 camPos;
-
-		void Draw3D(float mul = 1f)
-		{
-			var graphics = GameMgr.Game.GraphicsDevice;
-			
-			var t = GameMgr.ElapsedTimeTotal;
-			var center = wrap.Position;
-			var cameraPosition = new Vector3(camPos.X + center.Y, camPos.Y + center.Y, 800 * (float)Math.Sin(t));
-			
-			effect.World = Matrix.CreateTranslation(Vector3.Zero);
-			effect.View =
-			//Matrix.CreateRotationZ((float)GameMgr.ElapsedTimeTotal * mul)
-			Matrix.CreateLookAt(cameraPosition, new Vector3(center.X, center.Y, 100), Vector3.UnitZ);
-			//* Matrix.CreateRotationZ((float)GameMgr.ElapsedTimeTotal * mul);
-
-			float aspectRatio = cam.Size.X / cam.Size.Y;
-			
-			effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 1, 40000);
-			
-			effect.TextureEnabled = true;
-			effect.Texture = Resources.Sprites.Default.Monofoxe[0].Texture;
-			
-			foreach(var pass in effect.CurrentTechnique.Passes)
-			{
-				pass.Apply();
-
-				graphics.DrawUserIndexedPrimitives(
-					PrimitiveType.TriangleList,
-					wrap.Draw3D().ToArray(),
-					0,
-					4,
-					wrap._indices, 0, 2
-				);
-			}
-		}
-
+		
+		
 	}
 }

@@ -4,7 +4,6 @@ using Monofoxe.Engine.Drawing;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace WrapStuff.Wraps
 {
@@ -30,21 +29,6 @@ namespace WrapStuff.Wraps
 			Root.Draw();
 			GraphicsMgr.ResetTransformMatrix();
 		}
-
-		public List<VertexPositionColorTexture> Draw3D()
-		{
-			var matrix = Matrix.CreateTranslation((Vector2.UnitY * Root.Size.Y / 2f).ToVector3())
-				* Matrix.CreateRotationZ(MathHelper.ToRadians(Rotation))
-				* Matrix.CreateTranslation(Position.ToVector3());
-
-			var vertices = new List<VertexPositionColorTexture>();
-
-			Root.Get3DVertices(vertices, matrix);
-
-			return vertices;
-			
-		}
-		
 
 		/// <summary>
 		/// Reads the wrap data from XML.

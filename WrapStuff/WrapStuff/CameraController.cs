@@ -22,9 +22,7 @@ namespace WrapStuff
 		float _maxZoom = 30f;
 
 		float _zoomSpeed = 1;
-
-		float _rotationSpeed = 120;
-
+		
 		public const Buttons UpButton = Buttons.Up;
 		public const Buttons DownButton = Buttons.Down;
 		public const Buttons LeftButton = Buttons.Left;
@@ -76,13 +74,13 @@ namespace WrapStuff
 		{
 			Text.CurrentFont = Resources.Fonts.Arial;
 			Text.Draw(
-				CameraController.UpButton + "/" +
-				CameraController.DownButton + "/" +
-				CameraController.LeftButton + "/" +
-				CameraController.RightButton + " - move the camera. + " +
+				UpButton + "/" +
+				DownButton + "/" +
+				LeftButton + "/" +
+				RightButton + " - move the camera. + " +
 				Environment.NewLine +
-				CameraController.ZoomInButton + "/" +
-				CameraController.ZoomOutButton + " - zoom.",
+				ZoomInButton + "/" +
+				ZoomOutButton + " - zoom.",
 				Vector2.One * 32
 			);
 		}
